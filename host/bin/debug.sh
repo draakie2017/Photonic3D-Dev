@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./start.sh "Photocentric3D/Photonic3D" "debug"
+./start.sh "draakie2017/Photonic3D" "debug"

@@ -257,7 +257,6 @@ else
 		chmod +x /etc/init.d/cwhservice
 		chmod +x /opt/cwh/os/Linux/armv61/pdp
 		rm ${DL_FILE}
-		wget https://raw.githubusercontent.com/Photocentric3D/Photonic3D-Dev/master/host/bin/run_on_update.sh
 		chmod 777 run_on_update.sh
 		./run_on_update.sh
 	else

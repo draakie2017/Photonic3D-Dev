@@ -611,7 +611,7 @@ public class HostProperties {
 		Properties configurationProperties = getMergedProperties();
 		HostInformation settings = new HostInformation(
 				configurationProperties.getProperty("deviceName", deviceName),
-				configurationProperties.getProperty("manufacturer", "Photocentric3D"));
+				configurationProperties.getProperty("manufacturer", "Currax3D"));
 		return settings;
 	}
 	
