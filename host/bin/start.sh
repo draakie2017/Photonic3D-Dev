@@ -257,8 +257,6 @@ else
 		chmod +x /etc/init.d/cwhservice
 		chmod +x /opt/cwh/os/Linux/armv61/pdp
 		rm ${DL_FILE}
-		chmod 777 run_on_update.sh
-		./run_on_update.sh
 	else
 		echo "["$(timestamp)"] No install required"
 		echo "["$(timestamp)"] INFO: Photonic up-to-date" >&2
@@ -286,12 +284,12 @@ echo var printerName = \"$printername\"\; > resourcesnew/printflow/js/printercon
 echo var repo = \"$repo\"\; >> resourcesnew/printflow/js/printerconfig.js
 
 
-if [ "$printername" != "Photocentric 10" ]; then
+#if [ "$printername" != "Photocentric 10" ]; then
 	# disable wlan0 because we don't want to use it
-	echo "["$(timestamp)"] Disabling on-board wireless"
-	echo "["$(timestamp)"] INFO: wlan0 disabled" >&2
-	ifconfig wlan0 down
-fi	
+#	echo "["$(timestamp)"] Disabling on-board wireless"
+#	echo "["$(timestamp)"] INFO: wlan0 disabled" >&2
+#	ifconfig wlan0 down
+#fi	
 
 if [ ! -f "/etc/init.d/cwhservice" ]; then
 	echo "["$(timestamp)"] Installing Photonic3D as a service"

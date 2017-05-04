@@ -26,7 +26,7 @@
   			"MonitorDriverConfig": {
              "DLP_X_Res":2048,
             "DLP_Y_Res":1536,
-            "OSMonitorID":":0.0",
+            "OSMonitorID":":Photocentric Touchscreen",
             "DisplayCommEnabled":false,
   				"ComPortSettings": {
   					"Handshake": "None"
@@ -380,7 +380,7 @@
   	},
   	"started": true,
   	"shutterOpen": false,
-  	"displayDeviceID": "0.0",
+  	"displayDeviceID": "Photocentric Touchscreen",
   	"currentSlicePauseTime": 0,
   	"status": "Ready",
   	"printPaused": false,
