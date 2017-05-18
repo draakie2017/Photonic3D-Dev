@@ -7,6 +7,28 @@
 		this.gCodeToSend = "";
 		this.squarePixelSize = 10;
 		var printerName = $location.search().printerName;
+		var firstPrinterName;
+		function getFirstPrinterName(){
+			
+		}
+		
+		function fixUrl(){
+			this.currentUrl = window.location.href
+			this.currentPrinterName = currentUrl.split('printerControlsPage')[1];
+			//this.firstPrinterName = "?printerName=" + getFirstPrinterName();
+			if (currentPrinterName == ""){
+				// Find the first name of available
+				$http.get('services/printers/getFirstAvailablePrinter').success(function(data) {
+		        	// The then function here is an opportunity to modify the response
+			        this.configurationObject = data["configuration"];
+			        firstPrinterName = configurationObject["name"]
+			        console.log(firstPrinterName)
+			     })
+				
+				location.replace(currentUrl + firstPrinterName)
+				
+			}
+		}
 		
 		function refreshPrinter(printer) {
 			controller.currentPrinter = printer;
@@ -118,7 +140,8 @@
         this.shutter = function shutter(shutterState) {
 			$http.get("services/printers/" + shutterState + "shutter/" + printerName).then(gCodeSuccess, errorFunction)
 		}
-
+        getFirstPrinterName()
+        fixUrl()
         loadPrinter();
         loadPrintJob();
 		attachToPrinter(printerName);
