@@ -23,9 +23,10 @@
 			        this.configurationObject = data["configuration"];
 			        firstPrinterName = configurationObject["name"]
 			        console.log(firstPrinterName)
+			        firstPrintNameString = String(firstPrinterName);
+			        console.log(firstPrintNameString)
+			        location.replace(currentUrl + "?printerName=" + firstPrinterName)
 			     })
-				
-				location.replace(currentUrl + firstPrinterName)
 				
 			}
 		}
