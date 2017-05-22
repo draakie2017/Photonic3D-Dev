@@ -119,6 +119,20 @@
 		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
 		}
 		
+		function openSavePrinterDialog(editTitle, isNewPrinter) {
+			var editPrinterModal = $uibModal.open({
+		        animation: true,
+		        templateUrl: 'editResin.html',
+		        controller: 'editResinController',
+		        size: "lg",
+		        resolve: {
+		        	title: function () {return editTitle;},
+		        	editPrinter: function () {return controller.editPrinter;}
+		        }
+			});
+		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
+		}
+		
 		//TODO: When we get an upload complete message, we need to refresh file list...
 		$scope.showFontUpload = function showFontUpload() {
 			var fileChosenModal = $uibModal.open({

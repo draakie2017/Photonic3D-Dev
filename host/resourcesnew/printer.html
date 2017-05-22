@@ -72,6 +72,10 @@
 					<i class="fa fa-pencil" style="width: 0px";></i>
 					<span>Save</span>
 				</button>
+				<button class="btn btn-primary" ng-disabled="settingsController.currentPrinter.started" ng-click="savePrinter(settingsController.currentPrinter)" >
+					<i class="fa fa-pencil" style="width: 0px";></i>
+					<span>add new</span>
+				</button>
 			</div></h4>
 			<select name="type" class="form-control"
 				ng-model="settingsController.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex"
