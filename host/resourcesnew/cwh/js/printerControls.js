@@ -9,7 +9,7 @@
 		var printerName = $location.search().printerName;
 		var firstPrinterName;
 		
-		function fixUrl(){
+		function LoadPrinterName(){
 			this.currentUrl = window.location.href
 			this.currentPrinterName = currentUrl.split('printerControlsPage')[1];
 			//this.firstPrinterName = "?printerName=" + getFirstPrinterName();
@@ -19,15 +19,16 @@
 		        	// The then function here is an opportunity to modify the response
 			        this.configurationObject = data["configuration"];
 			        firstPrinterName = configurationObject["name"]
-			        console.log(firstPrinterName)
-			        firstPrintNameString = String(firstPrinterName);
-			        console.log(firstPrintNameString)
 			        printerName = firstPrinterName
 			        loadPrinter();
 			        loadPrintJob();
 					attachToPrinter(printerName);
 			     })
 				
+			} else {
+		        loadPrinter();
+		        loadPrintJob();
+				attachToPrinter(printerName);
 			}
 		}
 		
@@ -141,7 +142,7 @@
         this.shutter = function shutter(shutterState) {
 			$http.get("services/printers/" + shutterState + "shutter/" + printerName).then(gCodeSuccess, errorFunction)
 		}
-        fixUrl()
+        LoadPrinterName()
 	}])
 
 })();
