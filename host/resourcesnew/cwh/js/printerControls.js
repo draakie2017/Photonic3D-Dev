@@ -8,9 +8,6 @@
 		this.squarePixelSize = 10;
 		var printerName = $location.search().printerName;
 		var firstPrinterName;
-		function getFirstPrinterName(){
-			
-		}
 		
 		function fixUrl(){
 			this.currentUrl = window.location.href
@@ -25,7 +22,10 @@
 			        console.log(firstPrinterName)
 			        firstPrintNameString = String(firstPrinterName);
 			        console.log(firstPrintNameString)
-			        location.replace(currentUrl + "?printerName=" + firstPrinterName)
+			        printerName = firstPrinterName
+			        loadPrinter();
+			        loadPrintJob();
+					attachToPrinter(printerName);
 			     })
 				
 			}
@@ -141,11 +141,7 @@
         this.shutter = function shutter(shutterState) {
 			$http.get("services/printers/" + shutterState + "shutter/" + printerName).then(gCodeSuccess, errorFunction)
 		}
-        getFirstPrinterName()
         fixUrl()
-        loadPrinter();
-        loadPrintJob();
-		attachToPrinter(printerName);
 	}])
 
 })();
