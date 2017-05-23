@@ -119,20 +119,6 @@
 		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
 		}
 		
-		function openSavePrinterDialog(editTitle, isNewPrinter) {
-			var editPrinterModal = $uibModal.open({
-		        animation: true,
-		        templateUrl: 'editResin.html',
-		        controller: 'editResinController',
-		        size: "lg",
-		        resolve: {
-		        	title: function () {return editTitle;},
-		        	editPrinter: function () {return controller.editPrinter;}
-		        }
-			});
-		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
-		}
-		
 		//TODO: When we get an upload complete message, we need to refresh file list...
 		$scope.showFontUpload = function showFontUpload() {
 			var fileChosenModal = $uibModal.open({
@@ -183,7 +169,7 @@
 			controller.editPrinter.configuration.SlicingProfileName = controller.editPrinter.configuration.name;
 			openSavePrinterDialog(editTitle, true);
 		}
-
+		
 		this.startCurrentPrinter = function startCurrentPrinter() {
 			$('#start-btn').attr('class', 'fa fa-refresh fa-spin');
 			executeActionAndRefreshPrinters("Start Printer", "No printer selected to start.", '/services/printers/start/', controller.currentPrinter, false, true);

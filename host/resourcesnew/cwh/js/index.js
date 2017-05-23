@@ -1,4 +1,3 @@
-(function() {
 		var cwhApp = angular.module('cwhApp', ['ui.bootstrap', 'ngRoute', 'cwh.comport', 'cwh.spinner', 'cwh.webSocket', 'cwh.testscript', 'ngFileUpload', 'ngAnimate', 'chart.js', 'printJobModelViewer']);
 		var firstCacheId = new Date().toDateString();
 		cwhApp.filter('secondsToDateTime', [function() {
