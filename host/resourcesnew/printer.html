@@ -53,9 +53,23 @@
 			  <option value="">{{settingsController.loadingMachineConfigMessage}}</option>
 			</select>		
 		</div>
-		<div class="list-group-item verbergen">
+		<div class="list-group-item">
 			<label>Slicing Profile</label>
-			<h4 class="list-group-item-heading">{{settingsController.currentPrinter.configuration.SlicingProfileName}}</h4>
+			<h4 class="list-group-item-heading">{{settingsController.currentPrinter.configuration.SlicingProfileName}}
+			<div class="btn-group pull-right" style=" padding-bottom: 5px;" >
+				<button class="btn btn-primary" ng-disabled="settingsController.currentPrinter.started" ng-click="savePrinter(settingsController.currentPrinter)" >
+					<i class="fa fa-pencil" style="width: 0px";></i>
+					<span>Save</span>
+				</button>
+				<button class="btn btn-success" ng-click="settingsController.createNewResinProfile('Add new Resin Profile')">
+					<i class="fa fa-plus" style="width: 0px"></i> 
+					<span>Create</span>
+				</button>
+				<button class="btn btn-success" ng-click="settingsController.copySlicingProfile('Copy slicing profile')">
+					<i class="fa fa-plus" style="width: 0px"></i> 
+					<span>Copy</span>
+				</button>
+			</div></h4>
 			<select name="type" class="form-control"
 				ng-model="settingsController.currentPrinter.configuration.slicingProfile" 
 				ng-options="item as item.name for item in settingsController.slicingProfiles track by item.name"
@@ -73,7 +87,7 @@
 					<span>Save</span>
 				</button>
 				<button class="btn btn-success" ng-click="settingsController.createNewResinProfile('Add new Resin Profile')">
-					<i class="fa fa-plus"></i> 
+					<i class="fa fa-plus" style="width: 0px"></i> 
 					<span>Create</span>
 				</button>
 			</div></h4>

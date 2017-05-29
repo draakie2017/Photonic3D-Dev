@@ -150,11 +150,46 @@
 			openSaveResinDialog(editTitle, true);
 		}
 		
+		this.copySlicingProfile = function copySlicingProfile(editTitle) {
+			if (controller.currentPrinter == null) {
+		        $http.post('/services/printers/createTemplatePrinter').success(
+		        		function (data) {
+		        			controller.editPrinter = data;
+		        			openCopySlicingProfileDialog(editTitle, true);
+		        		}).error(
+	    				function (data, status, headers, config, statusText) {
+	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
+		        		})
+		        return;
+			}
+			
+			controller.editPrinter = JSON.parse(JSON.stringify(controller.currentPrinter));
+			controller.editPrinter.configuration.name = controller.editPrinter.configuration.name + " (Copy)";
+			//These must be set before we save a printer, otherwise the xml files aren't saved properly
+			controller.editPrinter.configuration.MachineConfigurationName = controller.editPrinter.configuration.name;
+			controller.editPrinter.configuration.SlicingProfileName = controller.editPrinter.configuration.name;
+			openCopySlicingProfileDialog(editTitle, true);
+		}
+		
 		function openSaveResinDialog(editTitle, isNewPrinter) {
 			var editPrinterModal = $uibModal.open({
 		        animation: true,
 		        templateUrl: 'editResin.html',
 		        controller: 'EditResinController',
+		        size: "lg",
+		        resolve: {
+		        	title: function () {return editTitle;},
+		        	editPrinter: function () {return controller.editPrinter;}
+		        }
+			});
+		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
+		}
+		
+		function openCopySlicingProfileDialog(editTitle, isNewPrinter) {
+			var editPrinterModal = $uibModal.open({
+		        animation: true,
+		        templateUrl: 'copySlicingProfile.html',
+		        controller: 'copySLicingProfileController',
 		        size: "lg",
 		        resolve: {
 		        	title: function () {return editTitle;},
