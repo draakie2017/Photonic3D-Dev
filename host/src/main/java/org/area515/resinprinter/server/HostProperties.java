@@ -595,8 +595,8 @@ public class HostProperties {
 	public HostInformation loadHostInformation() {
 		Properties configurationProperties = getMergedProperties();
 		HostInformation settings = new HostInformation(
-				configurationProperties.getProperty("deviceName", deviceName),
-				configurationProperties.getProperty("manufacturer", "Currax3D"));
+				configurationProperties.getProperty("deviceName", "Currax3D printer"),
+				configurationProperties.getProperty("manufacturer", "Robin Kolk"));
 		return settings;
 	}
 	

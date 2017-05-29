@@ -1,7 +1,7 @@
 (function() {
 	var cwhApp = angular.module('cwhApp');
 
-	cwhApp.controller("copySlicingProfileController", function ($scope, $http, $uibModalInstance, title, editPrinter) {
+	cwhApp.controller("copySLicingProfileController", function ($scope, $http, $uibModalInstance, title, editPrinter) {
 		$scope.title = title;
 		$scope.editPrinter = editPrinter;
 		
