@@ -163,12 +163,36 @@
 		        return;
 			}
 			
-			controller.editPrinter = JSON.parse(JSON.stringify(controller.currentPrinter));
-			controller.editPrinter.configuration.name = controller.editPrinter.configuration.name + " (Copy)";
-			//These must be set before we save a printer, otherwise the xml files aren't saved properly
+			controller.currentSlicingProfile = JSON.parse(JSON.stringify(controller.currentPrinter.configuration.slicingProfile));
+			controller.currentSlicingProfile.name = controller.currentSlicingProfile.name + " (Copy) ";
+		
+			console.log(controller.currentSlicingProfile);
+			console.log(controller.currentSlicingProfile.name);
+			openCopySlicingProfileDialog(controller.currentSlicingProfile, editTitle, controller.currentSlicingProfile.name);
+
+			/* We can just use controller.currentSLicingProfile instead of this probably :
+			$http.get('services/machine/slicingProfiles/list').success(function(data) {
+       			if (data.length == 1 &&  controller.autodirect != 'disabled') {
+       				controller.currentSlicingProfileData = data[0];
+       				foundProfile = true;
+       			} else {
+				// find the correct slicing profile to send back later
+        		for (var i = 0; i < data.length; i++) {
+					if(data[i].name == controller.currentSlicingProfile.name){
+						controller.currentSlicingProfileData = data[i];
+						console.log(controller.currentSlicingProfileData);
+					}
+        		}
+       			}
+        		
+	        	$scope.slicingProfile = data;
+	        	openCopySlicingProfileDialog(data, editTitle, currentSlicingProfileName);
+	        });
+			controller.copySlicingProfile.name = controller.copySlicingProfile.configuration.name + " (Copy)";
+			These must be set before we save a printer, otherwise the xml files aren't saved properly
 			controller.editPrinter.configuration.MachineConfigurationName = controller.editPrinter.configuration.name;
 			controller.editPrinter.configuration.SlicingProfileName = controller.editPrinter.configuration.name;
-			openCopySlicingProfileDialog(editTitle, true);
+			openCopySlicingProfileDialog(editTitle, true); */
 		}
 		
 		function openSaveResinDialog(editTitle, isNewPrinter) {
@@ -185,7 +209,7 @@
 		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
 		}
 		
-		function openCopySlicingProfileDialog(editTitle, isNewPrinter) {
+		function openCopySlicingProfileDialog(data, editTitle, currentSlicingProfileName) {
 			var editPrinterModal = $uibModal.open({
 		        animation: true,
 		        templateUrl: 'copySlicingProfile.html',
@@ -193,7 +217,8 @@
 		        size: "lg",
 		        resolve: {
 		        	title: function () {return editTitle;},
-		        	editPrinter: function () {return controller.editPrinter;}
+		        	sliceData: function () {return data;},
+					nameProfile: function() {return currentSlicingProfileName;}
 		        }
 			});
 		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});

@@ -18,44 +18,10 @@
 	</div>
 	<div class="modal-body">
 			<div class="form-group">
-				<label class="col-xs-4 control-label">Printer Name</label>
+				<label class="col-xs-4 control-label">Slicingprofile Name</label>
 				<div class="col-xs-8">
-					<input type="text" class="form-control" placeholder="Printer Name" ng-model="editPrinter.configuration.name">
+					<input type="text" class="form-control" placeholder="SlicingProfile Name" ng-model="sliceData.name">
 				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-4 control-label"></label>
-				<div class="col-xs-8">
-					<input type="checkbox" ng-model="editPrinter.configuration.AutoStart">Start printer when Photonic3D starts</label>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-4 control-label">Display kaas2</label>
-				<div class="col-xs-8">
-					<select name="type" class="form-control" 
-						ng-model="editPrinter.configuration.machineConfig.MonitorDriverConfig.OSMonitorID" 
-						ng-options="graphicsDisplay for graphicsDisplay in graphicsDisplays">
-					  <option value="" selected>Select a Graphics Display...</option>
-					</select>
-				</div>
-			</div>
-			<div cwh-comport
-				serialportlabel="'Motors Serial Port'"
-				ng-model="editPrinter.configuration.machineConfig.MotorsDriverConfig.ComPortSettings"
-				serialportchoices="serialPorts"
-				speedchoices="comPortSpeeds"
-				paritychoices="parities"
-				stopbitschoices="stopBits"
-				databitschoices="dataBits">
-			</div>
-			<div cwh-comport
-				serialportlabel="'Projector Serial Port'"
-				ng-model="editPrinter.configuration.machineConfig.MonitorDriverConfig.ComPortSettings"
-				serialportchoices="serialPorts"
-				speedchoices="comPortSpeeds"
-				paritychoices="parities"
-				stopbitschoices="stopBits"
-				databitschoices="dataBits">
 			</div>
 	</div>
 </form>
