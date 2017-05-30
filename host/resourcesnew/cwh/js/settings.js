@@ -104,6 +104,20 @@
 			openSavePrinterDialog(editTitle, false);
 		}
 
+		$scope.copyTheSlicingProfile = function copyTheSlicingProfile(savedProfile){
+			console.log(savedProfile);
+			console.log("kaas");
+			$http.put("services/machine/slicingProfiles", savedProfile).then(
+		    		function (data) {
+						console.log(data);
+		    			alert("SlicingProfile saved.");
+		    		},
+		    		function (error) {
+ 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+		    		}
+		    )
+		}
+
 		$scope.savePrinter = function savePrinter(printer, renameProfiles) {
 			if (renameProfiles) {
 				controller.editPrinter.configuration.MachineConfigurationName = controller.editPrinter.configuration.name;
@@ -206,11 +220,13 @@
 		        	editPrinter: function () {return controller.editPrinter;}
 		        }
 			});
-		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
+		    editPrinterModal.result.then(function (savedPrinter) {
+				$scope.savePrinter(savedPrinter, isNewPrinter)
+			});
 		}
 		
 		function openCopySlicingProfileDialog(data, editTitle, currentSlicingProfileName) {
-			var editPrinterModal = $uibModal.open({
+			var copySlicingProfileModal = $uibModal.open({
 		        animation: true,
 		        templateUrl: 'copySlicingProfile.html',
 		        controller: 'copySLicingProfileController',
@@ -221,7 +237,9 @@
 					nameProfile: function() {return currentSlicingProfileName;}
 		        }
 			});
-		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
+		    copySlicingProfileModal.result.then(function (savedProfile) {
+				$scope.copyTheSlicingProfile(savedProfile)
+			});
 		}
 		
 		//TODO: When we get an upload complete message, we need to refresh file list...

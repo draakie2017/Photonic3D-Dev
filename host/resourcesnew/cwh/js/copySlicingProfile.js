@@ -15,9 +15,9 @@
 					$scope.graphicsDisplays = data;
 				});
 
-		//$scope.save = function () {
-		//	$uibModalInstance.close(editPrinter);
-		//};
+		$scope.save = function () {
+			$uibModalInstance.close(sliceData);
+		};
 		
 		$scope.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
