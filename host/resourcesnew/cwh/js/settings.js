@@ -105,12 +105,14 @@
 		}
 
 		$scope.copyTheSlicingProfile = function copyTheSlicingProfile(savedProfile){
-			console.log(savedProfile);
-			console.log("kaas");
 			$http.put("services/machine/slicingProfiles", savedProfile).then(
 		    		function (data) {
-						console.log(data);
-		    			alert("SlicingProfile saved.");
+						$http.get('/services/machine/slicingProfiles/list').success(
+							function (data) {
+							controller.slicingProfiles = data;
+							controller.loadingProfilesMessage = "Select a slicing profile...";
+							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your slicing profile has been copied!.", response:true}, successFunction:null, afterErrorFunction:null});
+						});
 		    		},
 		    		function (error) {
  	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
@@ -179,34 +181,7 @@
 			
 			controller.currentSlicingProfile = JSON.parse(JSON.stringify(controller.currentPrinter.configuration.slicingProfile));
 			controller.currentSlicingProfile.name = controller.currentSlicingProfile.name + " (Copy) ";
-		
-			console.log(controller.currentSlicingProfile);
-			console.log(controller.currentSlicingProfile.name);
 			openCopySlicingProfileDialog(controller.currentSlicingProfile, editTitle, controller.currentSlicingProfile.name);
-
-			/* We can just use controller.currentSLicingProfile instead of this probably :
-			$http.get('services/machine/slicingProfiles/list').success(function(data) {
-       			if (data.length == 1 &&  controller.autodirect != 'disabled') {
-       				controller.currentSlicingProfileData = data[0];
-       				foundProfile = true;
-       			} else {
-				// find the correct slicing profile to send back later
-        		for (var i = 0; i < data.length; i++) {
-					if(data[i].name == controller.currentSlicingProfile.name){
-						controller.currentSlicingProfileData = data[i];
-						console.log(controller.currentSlicingProfileData);
-					}
-        		}
-       			}
-        		
-	        	$scope.slicingProfile = data;
-	        	openCopySlicingProfileDialog(data, editTitle, currentSlicingProfileName);
-	        });
-			controller.copySlicingProfile.name = controller.copySlicingProfile.configuration.name + " (Copy)";
-			These must be set before we save a printer, otherwise the xml files aren't saved properly
-			controller.editPrinter.configuration.MachineConfigurationName = controller.editPrinter.configuration.name;
-			controller.editPrinter.configuration.SlicingProfileName = controller.editPrinter.configuration.name;
-			openCopySlicingProfileDialog(editTitle, true); */
 		}
 		
 		function openSaveResinDialog(editTitle, isNewPrinter) {
@@ -240,6 +215,21 @@
 		    copySlicingProfileModal.result.then(function (savedProfile) {
 				$scope.copyTheSlicingProfile(savedProfile)
 			});
+		}
+
+		$scope.deleteCurrentSlicingProfile = function deleteCurrentSlicingProfile(SlicingProfileName) {
+			$http.delete('/services/machine/slicingProfiles/' + SlicingProfileName).success(
+		        function (data) {
+						$http.get('/services/machine/slicingProfiles/list').success(
+							function (data) {
+							controller.slicingProfiles = data;
+							controller.loadingProfilesMessage = "Select a slicing profile...";
+							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
+							});						
+				       	}).error(
+	    				function (data, status, headers, config, statusText) {
+	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
+		        		})
 		}
 		
 		//TODO: When we get an upload complete message, we need to refresh file list...
@@ -392,7 +382,6 @@
 					controller.machineConfigurations = data;
 					controller.loadingMachineConfigMessage = "Select a machine configuration...";
 				});
-		//https://raw.githubusercontent.com/WesGilster/Creation-Workshop-Host/master/host/printers/mUVe%201.json
 		$http.get("https://api.github.com/repos/" + $scope.repo + "/contents/host/" + PRINTERS_DIRECTORY + "?ref=" + BRANCH).success(
 			function (data) {
 				$scope.communityPrinters = data;

@@ -61,9 +61,9 @@
 					<i class="fa fa-pencil" style="width: 0px";></i>
 					<span>Save</span>
 				</button>
-				<button class="btn btn-success" ng-click="settingsController.createNewResinProfile('Add new Resin Profile')">
-					<i class="fa fa-plus" style="width: 0px"></i> 
-					<span>Create</span>
+				<button class="btn btn-danger" ng-disabled="settingsController.currentPrinter == null" ng-click="deleteCurrentSlicingProfile(settingsController.currentPrinter.configuration.SlicingProfileName=settingsController.currentPrinter.configuration.slicingProfile.name)">
+					<i class="fa fa-trash-o" style="width: 0px"></i> 
+					<span>Remove</span>
 				</button>
 				<button class="btn btn-success" ng-click="settingsController.copySlicingProfile('Copy slicing profile')">
 					<i class="fa fa-plus" style="width: 0px"></i> 
