@@ -197,10 +197,6 @@
 			var profileNameEn = encodeURIComponent(profileName);
 		     $http.delete("/services/machine/slicingProfiles/" + profileNameEn).success(function (data) {
 		       	 refreshSlicingProfiles();
-		       	 if(newProfile != undefined){
-		       		console.log("adding profile");
-		       		deleteCurrentResinProfile(newProfile); 
-		       	 }
 		    	 $scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});							
 		    	
 		     }).error(
@@ -209,9 +205,20 @@
 		        		})
 		}
 		
-		function deleteCurrentResinProfile(newProfile) {
-		newProfile.InkConfig.splice(newProfile.selectedInkConfigIndex,1);
-		SaveEditSlicingProfile(newProfile);
+		this.deleteCurrentResinProfile = function deleteCurrentResinProfile(slicingProfile) {
+			// removes the selected resinprofile from the old profile
+			slicingProfile.InkConfig.splice(slicingProfile.selectedInkConfigIndex,1);
+			
+			// this re-uploads the changed profile
+			$http.put("services/machine/slicingProfiles", slicingProfile).then(
+		    		function (data) {
+		    			refreshSlicingProfiles();		
+		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your resin profile has been removed!.", response:true}, successFunction:null, afterErrorFunction:null});
+		    		},
+		    		function (error) {
+ 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+		    		}
+		    )
 				
 		}
 			
