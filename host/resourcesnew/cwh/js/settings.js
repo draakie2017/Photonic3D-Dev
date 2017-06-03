@@ -13,6 +13,8 @@
 		var BRANCH = "master";
 		var REPO = $scope.repo;
 		
+		var tempSLicingProfile;
+		
 		this.loadingFontsMessage = "--- Loading fonts from server ---"
 		this.loadingProfilesMessage = "--- Loading slicing profiles from server ---"
 		this.loadingMachineConfigMessage = "--- Loading machine configurations from server ---"
@@ -106,18 +108,6 @@
 			openSavePrinterDialog(editTitle, false);
 		}
 
-		$scope.copyTheSlicingProfile = function copyTheSlicingProfile(savedProfile){
-			$http.put("services/machine/slicingProfiles", savedProfile).then(
-		    		function (data) {
-		    			refreshSlicingProfiles();
-		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your slicing profile has been copied!.", response:true}, successFunction:null, afterErrorFunction:null});
-		    		},
-		    		function (error) {
- 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
-		    		}
-		    )
-		}
-
 		$scope.savePrinter = function savePrinter(printer, renameProfiles) {
 			
 			if (renameProfiles) {
@@ -157,6 +147,18 @@
 			openCopySlicingProfileDialog(controller.currentSlicingProfile, editTitle, controller.currentSlicingProfile.name);
 		}
 		
+		function SaveEditSlicingProfile(savedProfile){
+			$http.put("services/machine/slicingProfiles", savedProfile).then(
+		    		function (data) {
+		    			refreshSlicingProfiles();
+		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your slicing profile has been copied!.", response:true}, successFunction:null, afterErrorFunction:null});
+		    		},
+		    		function (error) {
+ 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+		    		}
+		    )
+		}
+		
 		function openSaveResinDialog(editTitle, isNewPrinter) {
 			var editPrinterModal = $uibModal.open({
 		        animation: true,
@@ -186,35 +188,31 @@
 		        }
 			});
 		    copySlicingProfileModal.result.then(function (savedProfile) {
-				$scope.copyTheSlicingProfile(savedProfile)
+				SaveEditSlicingProfile(savedProfile);  
 			});
 		}
 
-		this.deleteCurrentSlicingProfile = function deleteCurrentSlicingProfile() {
-			var profileNameEn = encodeURIComponent(controller.currentPrinter.configuration.slicingProfile.name);
+		this.deleteSlicingProfile = function deleteSlicingProfile(profileName, newProfile) {
+			
+			var profileNameEn = encodeURIComponent(profileName);
 		     $http.delete("/services/machine/slicingProfiles/" + profileNameEn).success(function (data) {
-		        			refreshSlicingProfiles();
-							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});					
-				       	}).error(
+		       	 refreshSlicingProfiles();
+		       	 if(newProfile != undefined){
+		       		console.log("adding profile");
+		       		deleteCurrentResinProfile(newProfile); 
+		       	 }
+		    	 $scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});							
+		    	
+		     }).error(
 	    				function (data, status, headers, config, statusText) {
 	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
 		        		})
 		}
 		
-		this.deleteCurrentResinProfile = function deleteCurrentResinProfile() {
-			tempSLicingProfile = controller.currentPrinter.configuration.slicingProfile;
-			console.log(tempSLicingProfile);
-			tempSLicingProfile.InkConfig.splice(tempSLicingProfile.selectedInkConfigIndex,5);
-			console.log(tempSLicingProfile);
-
-			var profileNameEn = encodeURIComponent(controller.currentPrinter.configuration.slicingProfile.name);
-		    $http.delete("/services/machine/slicingProfiles/" + profileNameEn).success(function (data) {
-		        			refreshSlicingProfiles();
-							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});					
-				       	}).error(
-	    				function (data, status, headers, config, statusText) {
-	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
-		        		})
+		function deleteCurrentResinProfile(newProfile) {
+		newProfile.InkConfig.splice(newProfile.selectedInkConfigIndex,1);
+		SaveEditSlicingProfile(newProfile);
+				
 		}
 			
 		//TODO: When we get an upload complete message, we need to refresh file list...
