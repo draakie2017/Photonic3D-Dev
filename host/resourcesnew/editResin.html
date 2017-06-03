@@ -17,49 +17,45 @@
 			</h4>
 	</div>
 	<div class="modal-body">
-			<div class="form-group">
-				<label class="col-xs-4 control-label">Printer Name</label>
-				<div class="col-xs-8">
-					<input type="text" class="form-control" placeholder="Printer Name" ng-model="editPrinter.configuration.name">
+			<div class="panel panel-default">
+			<div class="list-group">
+			<div class="list-group-item">
+					<i title="template variable = ${LayerThickness}" class="fa fa-2x fa-hashtag pull-left"></i>
+					<h4 style="width: 40%; display: inline-table;" title="template variable = ${LayerThickness}">Name Resin Profile</h4>
+					<input style="width: 50%; display: inline; float: right;" title="template variable = ${LayerThickness}" type="number" step="0.01" class="form-control" placeholder="pixels/mm" ng-model="settingsController.currentPrinter.configuration.slicingProfile.DotsPermmX">
+				</div>
+				<div class="list-group-item">
+					<i class="fa fa-2x fa-money pull-left"></i>
+					<h4 style="width: 40%; display: inline-table;">Resin Price Per Liter (£)	</h4>
+					<input type="number" style="width: 50%; display: inline; float: right;" class="form-control" placeholder="£" step="0.01" ng-model="settingsController.currentPrinter.configuration.slicingProfile.InkConfig[settingsController.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex].ResinPriceL">
+				</div>
+				<div class="list-group-item">
+					<i title="template variable = ${LayerThickness}" class="fa fa-2x fa-reorder pull-left"></i>
+					<h4 style="width: 40%; display: inline-table;" title="template variable = ${LayerThickness}">Slice Height (mm)</h4>
+					<input style="width: 50%; display: inline; float: right;" title="template variable = ${LayerThickness}" type="number" step="0.01" class="form-control" placeholder="mm" ng-model="settingsController.currentPrinter.configuration.slicingProfile.InkConfig[settingsController.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex].SliceHeight">
+				</div>
+				<div class="list-group-item">
+					<i title="template variable = ${LayerTime}" class="fa fa-2x fa-fire pull-left"></i>
+					<h4 style="width: 40%; display: inline-table;" title="template variable = ${LayerTime}">Exposure Time (ms)</h4>
+					<input style="width: 50%; display: inline; float: right;" title="template variable = ${LayerTime}" type="number" step="0.01" class="form-control" placeholder="mm" ng-model="settingsController.currentPrinter.configuration.slicingProfile.InkConfig[settingsController.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex].LayerTime">
+				</div>
+				<div class="list-group-item">
+					<i title="template variable = ${$NumFirstLayers}" class="fa fa-2x fa-sort-numeric-asc pull-left"></i>
+					<h4 style="width: 40%; display: inline-table;" title="template variable = ${$NumFirstLayers}">Number Of First Layers</h4>
+					<input style="width: 50%; display: inline; float: right;" title="template variable = ${$NumFirstLayers}" type="number" class="form-control" placeholder="count" ng-model="settingsController.currentPrinter.configuration.slicingProfile.InkConfig[settingsController.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex].NumberofBottomLayers">
+				</div>
+				<div class="list-group-item">
+					<span title="template variable = ${FirstLayerTime}" class="fa-stack fa-2x pull-left">
+						<i style="line-height: initial" class="fa fa-stack-1x fa-fire"></i>
+						<i style="line-height: initial" class="fa fa-stack-1x fa-reorder"></i>
+					</span>
+					<h4 style="width: 40%; display: inline-table; line-height: initial" title="template variable = ${FirstLayerTime}">Exposure Time For First Layers (ms)</h4>
+					<input style="width: 50%; display: inline; float: right;" title="template variable = ${FirstLayerTime}" type="number" class="form-control" placeholder="ms" ng-model="settingsController.currentPrinter.configuration.slicingProfile.InkConfig[settingsController.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex].FirstLayerTime">
+				</div>				
+				<div class="list-group-item">
+					<i title="template variable = ${LayerThickness}" class="fa fa-2x fa-code pull-left"></i>
+					<h4 style="width: 40%; display: inline-table;" title="template variable = ${LayerThickness}">PercentageOfPrintMaterialConsideredEmpty</h4>
+					<input style="width: 50%; display: inline; float: right;" title="template variable = ${LayerThickness}" type="number" step="0.01" class="form-control" placeholder="pixels/mm" ng-model="settingsController.currentPrinter.configuration.slicingProfile.DotsPermmY">
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-xs-4 control-label"></label>
-				<div class="col-xs-8">
-					<input type="checkbox" ng-model="editPrinter.configuration.AutoStart">Start printer when Photonic3D starts</label>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-4 control-label">Display kaas</label>
-				<div class="col-xs-8">
-					<select name="type" class="form-control" 
-						ng-model="editPrinter.configuration.machineConfig.MonitorDriverConfig.OSMonitorID" 
-						ng-options="graphicsDisplay for graphicsDisplay in graphicsDisplays">
-					  <option value="" selected>Select a Graphics Display...</option>
-					</select>
-				</div>
-			</div>
-			<div cwh-comport
-				serialportlabel="'Motors Serial Port'"
-				ng-model="editPrinter.configuration.machineConfig.MotorsDriverConfig.ComPortSettings"
-				serialportchoices="serialPorts"
-				speedchoices="comPortSpeeds"
-				paritychoices="parities"
-				stopbitschoices="stopBits"
-				databitschoices="dataBits">
-			</div>
-			<div cwh-comport
-				serialportlabel="'Projector Serial Port'"
-				ng-model="editPrinter.configuration.machineConfig.MonitorDriverConfig.ComPortSettings"
-				serialportchoices="serialPorts"
-				speedchoices="comPortSpeeds"
-				paritychoices="parities"
-				stopbitschoices="stopBits"
-				databitschoices="dataBits">
-			</div>
-	</div>
-</form>
 
-<div class="modal-footer">
-	<span ng-include="'cardFooter.html'"></span>
-</div>	

@@ -138,7 +138,7 @@
 			console.log(controller.currentPrinter.configuration.slicingProfile);
 			console.log(controller.currentPrinter.configuration.slicingProfile.InkConfig[controller.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex]);
 			console.log(controller.currentPrinter.configuration.slicingProfile.InkConfig.length);
-			//openSaveResinDialog(editTitle, true);
+			openSaveResinDialog(editTitle, true);
 		}
 		
 		this.copySlicingProfile = function copySlicingProfile(editTitle) {
