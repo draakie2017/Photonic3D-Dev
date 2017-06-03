@@ -148,24 +148,10 @@
 		}
 		
 		this.createNewResinProfile = function createNewResinProfile(editTitle) {
-			if (controller.currentPrinter == null) {
-		        $http.post('/services/printers/createTemplatePrinter').success(
-		        		function (data) {
-		        			controller.editPrinter = data;
-		        			openSaveResinDialog(editTitle, true);
-		        		}).error(
-	    				function (data, status, headers, config, statusText) {
-	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
-		        		})
-		        return;
-			}
-			
-			controller.editPrinter = JSON.parse(JSON.stringify(controller.currentPrinter));
-			controller.editPrinter.configuration.name = controller.editPrinter.configuration.name + " (Copy)";
-			//These must be set before we save a printer, otherwise the xml files aren't saved properly
-			controller.editPrinter.configuration.MachineConfigurationName = controller.editPrinter.configuration.name;
-			controller.editPrinter.configuration.SlicingProfileName = controller.editPrinter.configuration.name;
-			openSaveResinDialog(editTitle, true);
+			console.log(controller.currentPrinter.configuration.slicingProfile);
+			console.log(controller.currentPrinter.configuration.slicingProfile.InkConfig[controller.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex]);
+			console.log(controller.currentPrinter.configuration.slicingProfile.InkConfig.length);
+			//openSaveResinDialog(editTitle, true);
 		}
 		
 		this.copySlicingProfile = function copySlicingProfile(editTitle) {
@@ -219,7 +205,7 @@
 			});
 		}
 
-		$scope.deleteCurrentSlicingProfile = function deleteCurrentSlicingProfile(SlicingProfileName) {
+		this.deleteCurrentSlicingProfile = function deleteCurrentSlicingProfile(SlicingProfileName) {
 			$http.delete('/services/machine/slicingProfiles/' + SlicingProfileName).success(
 		        function (data) {
 						$http.get('/services/machine/slicingProfiles/list').success(
@@ -234,6 +220,11 @@
 		        		})
 		}
 		
+		this.deleteCurrentResinProfile = function deleteCurrentResinProfile() {
+			controller.currentPrinter.configuration.slicingProfile.InkConfig.splice = (controller.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex,1);
+			refreshSlicingProfiles();
+			$scope.$emit("MachineResponse", {machineResponse: {command:"Resin settings removed!", message:"Your resin profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
+		}
 		//TODO: When we get an upload complete message, we need to refresh file list...
 		$scope.showFontUpload = function showFontUpload() {
 			var fileChosenModal = $uibModal.open({
