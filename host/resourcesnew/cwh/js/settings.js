@@ -218,19 +218,10 @@
 		
 		this.deleteCurrentResinProfile = function deleteCurrentResinProfile() {
 			tempSLicingProfile = controller.currentPrinter.configuration.slicingProfile;
-			console.log(tempSLicingProfile);
-			tempSLicingProfile.InkConfig.splice = (tempSLicingProfile.selectedInkConfigIndex,1);
-			console.log(tempSLicingProfile);
+			tempSLicingProfile.InkConfig.splice(tempSLicingProfile.selectedInkConfigIndex,1);
 			
-			//testing splice
-			var testArray  = ["a","b","c"];
-			console.log(testArray);
-			console.log("size:" + testArray.length);
-			testArray.splice(0,1);
-			console.log(testArray);
-			console.log("size:" + testArray.length);
-			
-			
+			// this might be exaggerating but better be safe than sorry :)
+			// TODO test if this can be simplified
 			$http.delete('/services/machine/slicingProfiles/' + controller.currentPrinter.configuration.slicingProfile.name).success(
 			        function (data) {
 			        	$http.put("services/machine/slicingProfiles", tempSLicingProfile).then(
