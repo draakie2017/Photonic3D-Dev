@@ -109,12 +109,8 @@
 		$scope.copyTheSlicingProfile = function copyTheSlicingProfile(savedProfile){
 			$http.put("services/machine/slicingProfiles", savedProfile).then(
 		    		function (data) {
-						$http.get('/services/machine/slicingProfiles/list').success(
-							function (data) {
-							controller.slicingProfiles = data;
-							controller.loadingProfilesMessage = "Select a slicing profile...";
-							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your slicing profile has been copied!.", response:true}, successFunction:null, afterErrorFunction:null});
-						});
+		    			refreshSlicingProfiles();
+		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your slicing profile has been copied!.", response:true}, successFunction:null, afterErrorFunction:null});
 		    		},
 		    		function (error) {
  	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
@@ -221,9 +217,45 @@
 		}
 		
 		this.deleteCurrentResinProfile = function deleteCurrentResinProfile() {
-			controller.currentPrinter.configuration.slicingProfile.InkConfig.splice = (controller.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex,1);
-			refreshSlicingProfiles();
-			$scope.$emit("MachineResponse", {machineResponse: {command:"Resin settings removed!", message:"Your resin profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
+			tempSLicingProfile = controller.currentPrinter.configuration.slicingProfile;
+			console.log(tempSLicingProfile);
+			tempSLicingProfile.InkConfig.splice = (tempSLicingProfile.selectedInkConfigIndex,1);
+			console.log(tempSLicingProfile);
+			
+			//testing splice
+			var testArray  = ["a","b","c"];
+			console.log(testArray);
+			console.log("size:" + testArray.length);
+			testArray.splice(0,1);
+			console.log(testArray);
+			console.log("size:" + testArray.length);
+			
+			
+			$http.delete('/services/machine/slicingProfiles/' + controller.currentPrinter.configuration.slicingProfile.name).success(
+			        function (data) {
+			        	$http.put("services/machine/slicingProfiles", tempSLicingProfile).then(
+					    		function (data) {
+					    			refreshSlicingProfiles();
+					    			$scope.$emit("MachineResponse", {machineResponse: {command:"Resin settings removed!", message:"Your resin profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
+					    		},
+					    		function (error) {
+			 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+					    		}
+			        	   	)		
+					  }).error(
+		    				function (data, status, headers, config, statusText) {
+		 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
+			        		})
+			
+			$http.put("services/machine/slicingProfiles", tempSLicingProfile).then(
+		    		function (data) {
+		    			refreshSlicingProfiles();
+		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Resin settings removed!", message:"Your resin profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
+		    		},
+		    		function (error) {
+ 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+		    		}
+		    )
 		}
 		//TODO: When we get an upload complete message, we need to refresh file list...
 		$scope.showFontUpload = function showFontUpload() {
