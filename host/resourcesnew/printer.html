@@ -61,7 +61,7 @@
 					<i class="fa fa-pencil" style="width: 0px";></i>
 					<span>Save</span>
 				</button>
-				<button class="btn btn-danger" ng-disabled="settingsController.currentPrinter == null" ng-click="deleteCurrentSlicingProfile(settingsController.currentPrinter.configuration.slicingProfile.name)">
+				<button class="btn btn-danger" ng-disabled="settingsController.currentPrinter == null" ng-click="settingsController.deleteCurrentSlicingProfile()">
 					<i class="fa fa-trash-o" style="width: 0px"></i> 
 					<span>Remove</span>
 				</button>

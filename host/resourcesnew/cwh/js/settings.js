@@ -119,6 +119,7 @@
 		}
 
 		$scope.savePrinter = function savePrinter(printer, renameProfiles) {
+			
 			if (renameProfiles) {
 				controller.editPrinter.configuration.MachineConfigurationName = controller.editPrinter.configuration.name;
 				controller.editPrinter.configuration.SlicingProfileName = controller.editPrinter.configuration.name;
@@ -151,18 +152,6 @@
 		}
 		
 		this.copySlicingProfile = function copySlicingProfile(editTitle) {
-			if (controller.currentPrinter == null) {
-		        $http.post('/services/printers/createTemplatePrinter').success(
-		        		function (data) {
-		        			controller.editPrinter = data;
-		        			openCopySlicingProfileDialog(editTitle, true);
-		        		}).error(
-	    				function (data, status, headers, config, statusText) {
-	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
-		        		})
-		        return;
-			}
-			
 			controller.currentSlicingProfile = JSON.parse(JSON.stringify(controller.currentPrinter.configuration.slicingProfile));
 			controller.currentSlicingProfile.name = controller.currentSlicingProfile.name + " (Copy) ";
 			openCopySlicingProfileDialog(controller.currentSlicingProfile, editTitle, controller.currentSlicingProfile.name);
@@ -201,15 +190,11 @@
 			});
 		}
 
-		this.deleteCurrentSlicingProfile = function deleteCurrentSlicingProfile(SlicingProfileName) {
-			$http.delete('/services/machine/slicingProfiles/' + SlicingProfileName).success(
-		        function (data) {
-						$http.get('/services/machine/slicingProfiles/list').success(
-							function (data) {
-							controller.slicingProfiles = data;
-							controller.loadingProfilesMessage = "Select a slicing profile...";
-							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
-							});						
+		this.deleteCurrentSlicingProfile = function deleteCurrentSlicingProfile() {
+			var profileNameEn = encodeURIComponent(controller.currentPrinter.configuration.slicingProfile.name);
+		     $http.delete("/services/machine/slicingProfiles/" + profileNameEn).success(function (data) {
+		        			refreshSlicingProfiles();
+							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});					
 				       	}).error(
 	    				function (data, status, headers, config, statusText) {
 	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
@@ -218,36 +203,20 @@
 		
 		this.deleteCurrentResinProfile = function deleteCurrentResinProfile() {
 			tempSLicingProfile = controller.currentPrinter.configuration.slicingProfile;
-			tempSLicingProfile.InkConfig.splice(tempSLicingProfile.selectedInkConfigIndex,1);
-			
-			// this might be exaggerating but better be safe than sorry :)
-			// TODO test if this can be simplified
-			$http.delete('/services/machine/slicingProfiles/' + controller.currentPrinter.configuration.slicingProfile.name).success(
-			        function (data) {
-			        	$http.put("services/machine/slicingProfiles", tempSLicingProfile).then(
-					    		function (data) {
-					    			refreshSlicingProfiles();
-					    			$scope.$emit("MachineResponse", {machineResponse: {command:"Resin settings removed!", message:"Your resin profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
-					    		},
-					    		function (error) {
-			 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
-					    		}
-			        	   	)		
-					  }).error(
-		    				function (data, status, headers, config, statusText) {
-		 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
-			        		})
-			
-			$http.put("services/machine/slicingProfiles", tempSLicingProfile).then(
-		    		function (data) {
-		    			refreshSlicingProfiles();
-		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Resin settings removed!", message:"Your resin profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});
-		    		},
-		    		function (error) {
- 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
-		    		}
-		    )
+			console.log(tempSLicingProfile);
+			tempSLicingProfile.InkConfig.splice(tempSLicingProfile.selectedInkConfigIndex,5);
+			console.log(tempSLicingProfile);
+
+			var profileNameEn = encodeURIComponent(controller.currentPrinter.configuration.slicingProfile.name);
+		    $http.delete("/services/machine/slicingProfiles/" + profileNameEn).success(function (data) {
+		        			refreshSlicingProfiles();
+							$scope.$emit("MachineResponse", {machineResponse: {command:"Settings removed!", message:"Your slicing profile has been removed succesfully!.", response:true}, successFunction:null, afterErrorFunction:null});					
+				       	}).error(
+	    				function (data, status, headers, config, statusText) {
+	 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
+		        		})
 		}
+			
 		//TODO: When we get an upload complete message, we need to refresh file list...
 		$scope.showFontUpload = function showFontUpload() {
 			var fileChosenModal = $uibModal.open({
