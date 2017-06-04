@@ -1,8 +1,9 @@
 (function() {
 	var cwhApp = angular.module('cwhApp');
 
-	cwhApp.controller("EditResinController", function ($scope, $http, $uibModalInstance, title, editPrinter) {
-		// init resin profile
+	cwhApp.controller("EditResinController", function ($scope, $http, $uibModalInstance, title) {
+		
+		// init a new resin profile
 		$scope.title = title;
 		$scope.inkConfigArr = { 
 				FirstLayerTime:'', 
@@ -12,12 +13,13 @@
 				PercentageOfPrintMaterialConsideredEmpty:'', 
 				ResinPriceL:"", SliceHeight:'' 
 				};
+		
 		$scope.save = function () {
-			$uibModalInstance.close(editPrinter);
+			console.log($scope.inkConfigArr);
+			$uibModalInstance.close($scope.inkConfigArr);
 		};
 		
 		$scope.cancel = function () {
-			console.log($scope.inkConfigArr);
 			$uibModalInstance.dismiss('cancel');
 		};
 		

@@ -22,7 +22,6 @@
 		
 		this.toggleAdvanced = function toggleAdvanced(){
 			$scope.showAdvanced = !$scope.showAdvanced;
-			console.log("Advanced is now"+$scope.showAdvanced);
 		}
 		
 		this.getAdvanced = function getAdvanced(){
@@ -134,11 +133,28 @@
 		    editPrinterModal.result.then(function (savedPrinter) {$scope.savePrinter(savedPrinter, isNewPrinter)});
 		}
 		
-		this.createNewResinProfile = function createNewResinProfile(editTitle) {
-			console.log(controller.currentPrinter.configuration.slicingProfile);
-			console.log(controller.currentPrinter.configuration.slicingProfile.InkConfig[controller.currentPrinter.configuration.slicingProfile.selectedInkConfigIndex]);
-			console.log(controller.currentPrinter.configuration.slicingProfile.InkConfig.length);
-			openSaveResinDialog(editTitle, true);
+		function createNewResinProfile(newResinProfile) {
+			// this adds the new resinprofile in the current selected slicingprofile
+			var newSlicingProfile = controller.currentPrinter.configuration.slicingProfile;
+			newSlicingProfile.InkConfig.push(newResinProfile);
+									
+			// this re-uploads the changed profile
+			$http.put("services/machine/slicingProfiles", newSlicingProfile).then(
+		    		function (data) {
+		    			// for some reason this is needed when it is the currently loaded profile, otherwise it won't show after refresh
+				        $http.post('/services/printers/save', controller.currentPrinter).success(
+				        		function () {
+				        			refreshSlicingProfiles();
+					    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your new resin profile has been added!.", response:true}, successFunction:null, afterErrorFunction:null});
+				        		}).error(
+			    				function (data, status, headers, config, statusText) {
+			 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
+				        		})
+		    		},
+		    		function (error) {
+ 	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+		    		}
+		    )	
 		}
 		
 		this.copySlicingProfile = function copySlicingProfile(editTitle) {
@@ -159,7 +175,7 @@
 		    )
 		}
 		
-		function openSaveResinDialog(editTitle, isNewPrinter) {
+		this.openSaveResinDialog = function openSaveResinDialog(editTitle) {
 			var editPrinterModal = $uibModal.open({
 		        animation: true,
 		        templateUrl: 'editResin.html',
@@ -170,8 +186,8 @@
 		        	editPrinter: function () {return controller.editPrinter;}
 		        }
 			});
-		    editPrinterModal.result.then(function (savedPrinter) {
-				$scope.savePrinter(savedPrinter, isNewPrinter)
+		    editPrinterModal.result.then(function (newResinProfile) {
+		    	createNewResinProfile(newResinProfile)
 			});
 		}
 		
@@ -212,14 +228,20 @@
 			// this re-uploads the changed profile
 			$http.put("services/machine/slicingProfiles", slicingProfile).then(
 		    		function (data) {
-		    			refreshSlicingProfiles();		
-		    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your resin profile has been removed!.", response:true}, successFunction:null, afterErrorFunction:null});
+		    			// for some reason this is needed when it is the currently loaded profile, otherwise it won't show after refresh
+				        $http.post('/services/printers/save', controller.currentPrinter).success(
+				        		function () {
+				        			refreshSlicingProfiles();
+					    			$scope.$emit("MachineResponse", {machineResponse: {command:"Settings Saved!", message:"Your resin profile has been removed!.", response:true}, successFunction:null, afterErrorFunction:null});
+				        		}).error(
+			    				function (data, status, headers, config, statusText) {
+			 	        			$scope.$emit("HTTPError", {status:status, statusText:data});
+				        		})
 		    		},
 		    		function (error) {
  	        			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
 		    		}
 		    )
-				
 		}
 			
 		//TODO: When we get an upload complete message, we need to refresh file list...
