@@ -100,6 +100,9 @@
         this.executeGCode = function executeGCode() {
 			$http.get("services/printers/executeGCode/" + printerName + "/" + controller.gCodeToSend).then(gCodeSuccess, errorFunction)
 		}
+        this.executeStaticGCode = function executeGCode(gCodeToSend) {
+			$http.get("services/printers/executeGCode/" + printerName + "/" + gCodeToSend).then(gCodeSuccess, errorFunction)
+		}
         this.projector = function projector(startStop) {
 			$http.get("services/printers/" + startStop + "Projector/" + printerName).then(gCodeSuccess, errorFunction)
 		}

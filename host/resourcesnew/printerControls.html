@@ -46,6 +46,43 @@
 					</span>
 				</div>
 				<div class="list-group-item">
+					<i class="fa fa-2x fa-bolt pull-left"></i>
+					<h4>Costum Nick Buttons</h4>
+					<span class="btn-group" >
+						<a class="btn btn-danger btn-sm" ng-click="printerControlsController.executeStaticGCode(M106)" style="width: 132px;">
+							<b class="fa fa-toggle-off"></b> 
+							<b class="cwh-text-indent">LED ON (M106)</b>
+						</a>
+						<a class="btn btn-success btn-sm" ng-click="printerControlsController.executeStaticGCode(M107)" style="width: 132px;">
+							<b class="fa fa-toggle-on"></b>
+							<b class="cwh-text-indent">LED OFF (M107)</b>
+						</a>
+					</span>
+					<br><br>
+					<span class="btn-group" >
+						<a class="btn btn-danger btn-sm" ng-click="printerControlsController.executeStaticGCode(M42 P# S255)" style="width: 132px;">
+							<b class="fa fa-toggle-off"></b> 
+							<b class="cwh-text-indent">LED ON (M42)</b>
+						</a>
+						<a class="btn btn-success btn-sm" ng-click="printerControlsController.executeStaticGCode(M42 P# S0)" style="width: 132px;">
+							<b class="fa fa-toggle-on"></b>
+							<b class="cwh-text-indent">LED OFF (M42)</b>
+						</a>
+					</span>
+					<br><br>
+					<span class="btn-group" >
+						<a class="btn btn-primary btn-sm" ng-click="printerControlsController.executeStaticGCode(M280 P0 S0)" style="width: 132px;">
+							<b class="cwh-text-indent">Position 1 </b>
+						</a>
+					</span>
+					<br><br>
+					<span class="btn-group" >	
+						<a class="btn btn-primary btn-sm" ng-click="printerControlsController.executeStaticGCode(M280 P0 S#)"style="width: 132px;">
+								<b class="cwh-text-indent">Position 2</b>
+							</a>
+						</span>
+					</div>
+				<div class="list-group-item">
 					<i class="fa fa-2x fa-code pull-left"></i>
 					<h4>Execute Gcode</h4>
 					<div class="input-group">
@@ -144,6 +181,27 @@
 				</div>
 			</div>
 	
+			<div class="panel-footer">
+				<span ng-include="'cardFooter.html'"></span>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-4 bootcards-list" id="list">
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix">
+				<span class="pull-left fa-stack fa-lg">
+					<i class="fa fa-stack-1x fa-2x fa-print"></i>
+					<i class="fa fa-stack-2x fa-2x fa-play text-danger cwh-text-opacity_50" ng-show="printerControlsController.currentPrinter.printInProgress"></i>
+					<i class="fa fa-stack-3x fa-2x fa-ban text-danger cwh-text-opacity_50" ng-hide="printerControlsController.currentPrinter.started"></i>
+				</span>
+				<h4 class="pull-left">Printer parameters: {{printerControlsController.currentPrinter.configuration.name}} </h4>
+			</div>
+			<div class="list-group">
+				<div class="list-group-item" ng-hide="printerControlsController.currentPrinter.printInProgress">
+					<b class="cwh-text-indent">Current temperature: </b><br>
+					<b class="cwh-text-indent">Current position: </b><br>
+					<b class="cwh-text-indent">Endstop status: </b>
+				</div>
 			<div class="panel-footer">
 				<span ng-include="'cardFooter.html'"></span>
 			</div>
