@@ -1,6 +1,6 @@
 (function() {
 	var cwhApp = angular.module('cwhApp');
-	cwhApp.controller("PrinterControlsController", ['$scope', '$http', '$location', '$routeParams', 'cwhWebSocket', 'photonicUtils', function ($scope, $http, $location, $routeParams, cwhWebSocket, photonicUtils) {
+	cwhApp.controller("PrinterControlsController", ['$scope', '$http', '$location', '$routeParams', '$interval', 'cwhWebSocket', 'photonicUtils', function ($scope, $http, $location, $routeParams, $interval, cwhWebSocket, photonicUtils) {
 		controller = this;
 		this.currentPrintJob = null;
 		this.gcodeProcessing = "";
@@ -8,6 +8,11 @@
 		this.squarePixelSize = 10;
 		var printerName = $location.search().printerName;
 		var firstPrinterName;
+		this.thingNumber = "";
+		this.pinNumber = "";
+		this.currentTemprature = 1;
+		this.currentPosition = 1;
+		this.endStopStatus = true;
 		
 		function LoadPrinterName(){
 			this.currentUrl = window.location.href
@@ -71,7 +76,7 @@
         		})
 		}
         var gCodeSuccess = function (response) {
-			if (response.data.response) {
+ 			if (response.data.response) {
 				if (response.data.message.lastIndexOf("\n") != response.data.message.length-1) {
 					response.data.message += "\n";
 				}
@@ -100,8 +105,17 @@
         this.executeGCode = function executeGCode() {
 			$http.get("services/printers/executeGCode/" + printerName + "/" + controller.gCodeToSend).then(gCodeSuccess, errorFunction)
 		}
-        this.executeStaticGCode = function executeGCode(gCodeToSend) {
-			$http.get("services/printers/executeGCode/" + printerName + "/" + gCodeToSend).then(gCodeSuccess, errorFunction)
+        this.executeStaticGCode = function executeGCode(gCodeToSend,secondPart) {
+           	if (secondPart == false){
+        		$http.get("services/printers/executeGCode/" + printerName + "/" + gCodeToSend).then(gCodeSuccess, errorFunction)
+        	} else {
+        		if (secondPart == true){
+        			$http.get("services/printers/executeGCode/" + printerName + "/" + gCodeToSend + controller.thingNumber).then(gCodeSuccess, errorFunction)
+        		} else {
+        			$http.get("services/printers/executeGCode/" + printerName + "/" + gCodeToSend + controller.pinNumber + secondPart).then(gCodeSuccess, errorFunction)
+        		}
+        	}
+			
 		}
         this.projector = function projector(startStop) {
 			$http.get("services/printers/" + startStop + "Projector/" + printerName).then(gCodeSuccess, errorFunction)
@@ -145,6 +159,24 @@
         this.shutter = function shutter(shutterState) {
 			$http.get("services/printers/" + shutterState + "shutter/" + printerName).then(gCodeSuccess, errorFunction)
 		}
+        this.updatePrinterStatus = function updatePrinterStatus (){
+        	controller.currentTemprature += 1;
+        	controller.currentPosition += 2;
+        	
+        	$http.get("services/printers/executeGCode/" + printerName + "/" + "g28").then(function (response){
+        		//controller.currentTemprature = response.data.message;	
+        	}, errorFunction)
+        	
+        	$http.get("services/printers/executeGCode/" + printerName + "/" + "g28").then(function (response){
+        		//controller.currentPosition = response.data.message;	
+        	}, errorFunction)
+        	
+        	$http.get("services/printers/executeGCode/" + printerName + "/" + "g28").then(function (response){
+        		//controller.endStopStatus = response.data.message;	
+        	}, errorFunction)
+        }
+        
+        $interval(controller.updatePrinterStatus, 1000);        
         LoadPrinterName()
 	}])
 
