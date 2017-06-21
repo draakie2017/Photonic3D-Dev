@@ -176,7 +176,7 @@
         	}, errorFunction)
         }
         
-        this.testFunction = function (){
+        this.findName = function (){
         	if (controller.currentPrintJob){
         		controller.printerName = controller.currentPrintJob.printer.configuration.MachineConfigurationName;
         		controller.updatePrinterParameters();
@@ -191,8 +191,8 @@
         	}
         }        
         
-        $interval(controller.testFunction, 3000); 
-        controller.testFunction();
+        $interval(controller.findName, 3000); 
+        controller.findName();
 		this.refreshPrintJobs();
 	}])
 
