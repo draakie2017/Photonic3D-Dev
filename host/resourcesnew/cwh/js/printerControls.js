@@ -1,6 +1,6 @@
 (function() {
 	var cwhApp = angular.module('cwhApp');
-	cwhApp.controller("PrinterControlsController", ['$scope', '$http', '$location', '$routeParams', '$interval', 'cwhWebSocket', 'photonicUtils', function ($scope, $http, $location, $routeParams, $interval, cwhWebSocket, photonicUtils) {
+	cwhApp.controller("PrinterControlsController", ['$scope', '$http', '$location', '$routeParams', 'cwhWebSocket', 'photonicUtils', function ($scope, $http, $location, $routeParams, cwhWebSocket, photonicUtils) {
 		controller = this;
 		this.currentPrintJob = null;
 		this.gcodeProcessing = "";
@@ -10,9 +10,6 @@
 		var firstPrinterName;
 		this.thingNumber = "";
 		this.pinNumber = "";
-		this.currentTemprature = 1;
-		this.currentPosition = 1;
-		this.endStopStatus = true;
 		
 		function LoadPrinterName(){
 			this.currentUrl = window.location.href
@@ -159,24 +156,6 @@
         this.shutter = function shutter(shutterState) {
 			$http.get("services/printers/" + shutterState + "shutter/" + printerName).then(gCodeSuccess, errorFunction)
 		}
-        this.updatePrinterStatus = function updatePrinterStatus (){
-        	controller.currentTemprature += 1;
-        	controller.currentPosition += 2;
-        	
-        	$http.get("services/printers/executeGCode/" + printerName + "/" + "g28").then(function (response){
-        		//controller.currentTemprature = response.data.message;	
-        	}, errorFunction)
-        	
-        	$http.get("services/printers/executeGCode/" + printerName + "/" + "g28").then(function (response){
-        		//controller.currentPosition = response.data.message;	
-        	}, errorFunction)
-        	
-        	$http.get("services/printers/executeGCode/" + printerName + "/" + "g28").then(function (response){
-        		//controller.endStopStatus = response.data.message;	
-        	}, errorFunction)
-        }
-        
-        $interval(controller.updatePrinterStatus, 1000);        
         LoadPrinterName()
 	}])
 

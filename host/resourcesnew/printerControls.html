@@ -188,26 +188,4 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-4 bootcards-list" id="list">
-		<div class="panel panel-default">
-			<div class="panel-heading clearfix">
-				<span class="pull-left fa-stack fa-lg">
-					<i class="fa fa-stack-1x fa-2x fa-print"></i>
-					<i class="fa fa-stack-2x fa-2x fa-play text-danger cwh-text-opacity_50" ng-show="printerControlsController.currentPrinter.printInProgress"></i>
-					<i class="fa fa-stack-3x fa-2x fa-ban text-danger cwh-text-opacity_50" ng-hide="printerControlsController.currentPrinter.started"></i>
-				</span>
-				<h4 class="pull-left">Printer parameters: {{printerControlsController.currentPrinter.configuration.name}} </h4>
-			</div>
-			<div class="list-group">
-				<div class="list-group-item" ng-hide="printerControlsController.currentPrinter.printInProgress">
-					<b class="cwh-text-indent">Current temperature: {{printerControlsController.currentTemprature}} </b><br>
-					<b class="cwh-text-indent">Current position: {{printerControlsController.currentPosition}} </b><br>
-					<b class="cwh-text-indent">Endstop status: {{printerControlsController.endStopStatus}}</b>
-				</div>
-			<div class="panel-footer">
-				<span ng-include="'cardFooter.html'"></span>
-			</div>
-		</div>
-	</div>
-</div>
 </div>

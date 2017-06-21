@@ -1,6 +1,6 @@
 (function() {
 	var cwhApp = angular.module('cwhApp');
-	cwhApp.controller("PrintJobsController", ['$scope', '$http', '$location', '$anchorScroll', 'Upload', 'cwhWebSocket', 'photonicUtils', function ($scope, $http, $location, $anchorScroll, Upload, cwhWebSocket, photonicUtils) {
+	cwhApp.controller("PrintJobsController", ['$scope', '$http', '$location', '$anchorScroll', '$interval', 'Upload', 'cwhWebSocket', 'photonicUtils', function ($scope, $http, $location, $anchorScroll, $interval, Upload, cwhWebSocket, photonicUtils) {
 		controller = this;
 		
 		this.urlToUpload = null;
@@ -12,6 +12,10 @@
 		this.currentBuildPhoto = {width: 500, height: 500, url: null};
 		this.currentBuildVideo = {width: 100, height: 100, url: null};
 		this.currentBuildLiveStream = {url: null, clientId: Math.random()}
+		this.currentTemprature = "";
+		this.currentPosition = "";
+		this.endStopStatus = "";
+		this.printerName = "";
 
 		function refreshSelectedPrintJob(printJobList) {
         	var foundPrintJob = false;
@@ -154,6 +158,41 @@
 			return photonicUtils.getPrintFileProcessorIconClass(printable);
 		}
 		
+		var errorFunction = function (error) {
+			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
+		};
+		
+        this.updatePrinterParameters = function updatePrinterParameters (){
+        	$http.get("services/printers/executeGCode/" + controller.printerName + "/" + "M105").then(function (response){
+        		controller.currentTemprature = response.data.message;	
+        	}, errorFunction)
+        	
+        	$http.get("services/printers/executeGCode/" + controller.printerName + "/" + "M114").then(function (response){
+        		controller.currentPosition = response.data.message;	
+        	}, errorFunction)
+        	
+        	$http.get("services/printers/executeGCode/" + controller.printerName + "/" + "M119").then(function (response){
+        		controller.endStopStatus = response.data.message;	
+        	}, errorFunction)
+        }
+        
+        this.testFunction = function (){
+        	if (controller.currentPrintJob){
+        		controller.printerName = controller.currentPrintJob.printer.configuration.MachineConfigurationName;
+        		controller.updatePrinterParameters();
+        	} else {
+        		if (!controller.printerName){
+				$http.get('services/printers/getFirstAvailablePrinter').success(function(data) {
+			        this.configurationObject = data["configuration"];
+			        controller.printerName = configurationObject["name"];
+			        controller.updatePrinterParameters();
+				})
+        		} 
+        	}
+        }        
+        
+        $interval(controller.testFunction, 3000); 
+        controller.testFunction();
 		this.refreshPrintJobs();
 	}])
 
