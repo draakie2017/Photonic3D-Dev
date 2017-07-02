@@ -3,6 +3,15 @@
 @echo off
 setlocal
 
+rem // Get repo version from config.properties
+rem this is for when the code works properly on windows with updateRepo, watchout the 10 characters could be wrong!
+rem for /F "delims=" %%a in ('findstr /I "updateRepo" %HOMEPATH%/3dPrinters/config.properties') do set "updateRepo=%%a"
+rem set updateRepo=%updateRepo:~10%
+
+for /F "delims=" %%a in ('findstr /I "printerProfileRepo" config.properties') do set "updateRepo=%%a"
+set updateRepo=%updateRepo:~19%
+echo %updateRepo%
+
 rem // Get latest release file from github
 %CD%\curl\bin\curl -outf https://api.github.com/repos/Draakie2017/photonic3d-dev/releases/latest
 

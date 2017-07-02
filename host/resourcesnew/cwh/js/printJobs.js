@@ -162,7 +162,7 @@
 			$scope.$emit("HTTPError", {status:error.status, statusText:error.data});
 		};
 		
-        this.updatePrinterParameters = function updatePrinterParameters (){
+        function updatePrinterParameters (){
         	$http.get("services/printers/executeGCode/" + controller.printerName + "/" + "M105").then(function (response){
         		controller.currentTemprature = response.data.message;	
         	}, errorFunction)
@@ -177,15 +177,16 @@
         }
         
         this.findName = function (){
-        	if (controller.currentPrintJob){
+        	if (controller.currentPrintJob && controller.currentPrintJob.status == "Printing"){
         		controller.printerName = controller.currentPrintJob.printer.configuration.MachineConfigurationName;
-        		controller.updatePrinterParameters();
+        		updatePrinterParameters();
+        		
         	} else {
         		if (!controller.printerName){
 				$http.get('services/printers/getFirstAvailablePrinter').success(function(data) {
 			        this.configurationObject = data["configuration"];
 			        controller.printerName = configurationObject["name"];
-			        controller.updatePrinterParameters();
+			        updatePrinterParameters();
 				})
         		} 
         	}
